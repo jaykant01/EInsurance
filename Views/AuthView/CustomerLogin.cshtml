@@ -1,0 +1,49 @@
+﻿@model EInsurance.Models.DTOs.CustomerLoginRequestDto
+
+@{
+    ViewData["Title"] = "Customer Login";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white text-center">
+                <h4>Customer Login</h4>
+            </div>
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
+
+                <form asp-controller="AuthView" asp-action="CustomerLogin" method="post">
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email Address</label>
+                        <input asp-for="Email" type="email" class="form-control"
+                               placeholder="Enter your email" required />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" type="password"
+                               class="form-control" placeholder="Enter password" required />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Login</button>
+
+                </form>
+
+                <hr />
+                <div class="text-center">
+                    <p>New here? <a href="/AuthView/Register">Register as Customer</a></p>
+                    <p>Not a customer? <a href="/AuthView/Login">Login here</a></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
