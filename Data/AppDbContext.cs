@@ -11,7 +11,7 @@ namespace EInsurance.Data
 
         public DbSet<Employee> Employees { get; set; }
 
-        public DbSet<Customer> Customer { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         public DbSet<InsuranceAgent> InsuranceAgents { get; set; }
 
@@ -19,7 +19,7 @@ namespace EInsurance.Data
 
         public DbSet<Scheme> Schemes { get; set; }
 
-        public DbSet<Policy> Policy { get; set; }
+        public DbSet<Policy> Policies { get; set; }
 
         public DbSet<Payment> Payment { get; set; }
 
@@ -50,12 +50,12 @@ namespace EInsurance.Data
                 .HasIndex(c => c.Email).IsUnique();
 
             modelBuilder.Entity<Policy>()
-                .Property(p => p.Preminum)
+                .Property(p => p.Premium)
                 .HasColumnType("decimal(10,2)");
 
             modelBuilder.Entity<Payment>()
                 .Property(p => p.Amount)
-                .HasColumnType("decimal(10,2");
+                .HasColumnType("decimal(10,2)");
 
             modelBuilder.Entity<Commission>()
                 .Property(c => c.CommissionAmount)

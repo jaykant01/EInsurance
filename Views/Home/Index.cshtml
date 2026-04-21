@@ -2,7 +2,65 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="ei-hero">
+    <div class="ei-badge">Trusted Insurance Platform</div>
+    <h1 class="ei-title">Protect What<br><span>Matters Most</span></h1>
+    <p class="ei-sub">Simple, transparent insurance plans tailored to your life. Get covered in minutes, manage everything online.</p>
+    <div class="ei-btns">
+        <a asp-controller="AuthView" asp-action="Register" class="ei-btn-primary">Get Started</a>
+        <a asp-controller="AuthView" asp-action="Login" class="ei-btn-secondary">View Plans</a>
+    </div>
+</div>
+
+<div class="ei-cards">
+    <div class="ei-card">
+        <div class="ei-card-icon blue">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+        </div>
+        <h3>Life Insurance</h3>
+        <p>Secure your family's future with flexible term and whole life plans.</p>
+    </div>
+    <div class="ei-card">
+        <div class="ei-card-icon teal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+        </div>
+        <h3>Health Insurance</h3>
+        <p>Comprehensive health coverage for you and your loved ones.</p>
+    </div>
+    <div class="ei-card">
+        <div class="ei-card-icon amber">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18M9 21V9" />
+            </svg>
+        </div>
+        <h3>Property Insurance</h3>
+        <p>Protect your home and assets against unexpected events.</p>
+    </div>
+    <div class="ei-card">
+        <div class="ei-card-icon coral">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#993C1D" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4l3 3" />
+            </svg>
+        </div>
+        <h3>Quick Claims</h3>
+        <p>File and track claims online with fast turnaround times.</p>
+    </div>
+</div>
+
+<hr class="ei-divider">
+
+<div class="ei-cta">
+    <h2>Ready to get covered?</h2>
+    <p>Join thousands of customers who trust EInsurance for their protection needs.</p>
+    <a asp-controller="AuthView" asp-action="Register" class="ei-btn-primary">Create an Account</a>
 </div>

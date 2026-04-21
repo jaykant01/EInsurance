@@ -42,7 +42,7 @@ namespace EInsurance.Repositories.Implementations
 
         public async Task<bool> CustomerEmailExistsAsync(string email)
         {
-            return await _context.Customer
+            return await _context.Customers
                 .AnyAsync(c => c.Email == email);
         }
 
@@ -72,7 +72,7 @@ namespace EInsurance.Repositories.Implementations
 
         public async Task<Customer?> GetCustomerByEmailAsync(string email)
         {
-            return await _context.Customer
+            return await _context.Customers
                 .FirstOrDefaultAsync(c => c.Email == email);
         }
 
@@ -84,7 +84,7 @@ namespace EInsurance.Repositories.Implementations
 
         public async Task<Customer> RegisterCustomerAsync(Customer customer)
         {
-            _context.Customer.Add(customer);
+            _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
             return customer;
         }

@@ -22,16 +22,16 @@ namespace EInsurance.Models.Entities
         public string PolicyDetails { get; set; } = string.Empty;
 
         [Required]
-        public Decimal Preminum { get; set; }
+        public Decimal Premium { get; set; }
 
         [Required]
-        public DateOnly DateIssued { get; set; }
+        public DateTime DateIssued { get; set; }
 
         [Required]
         public int MaturityPeriod { get; set; }
 
         [Required]
-        public DateOnly PolicyLapseDate { get; set; }
+        public DateTime PolicyLapseDate { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

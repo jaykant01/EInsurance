@@ -1,0 +1,134 @@
+﻿@model List<EInsurance.Models.DTOs.AdminCustomerPolicyDto>
+@{
+    ViewData["Title"] = "Customer Policy Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>📋 Policies for @ViewBag.CustomerName</h2>
+        <small class="text-muted">Customer ID: @ViewBag.CustomerId</small>
+    </div>
+    <a asp-controller="Policy"
+       asp-action="CustomerPolicies"
+       class="btn btn-secondary">← Back to Search</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        <h5>This customer has no policies yet.</h5>
+    </div>
+}
+else
+{
+    @foreach (var policy in Model)
+    {
+        <div class="card shadow mb-4">
+
+            <div class="card-header bg-primary text-white d-flex justify-content-between">
+                <h5 class="mb-0">
+                    📄 Policy #@policy.PolicyID — @policy.SchemeName
+                </h5>
+                <span class="badge bg-light text-primary">
+                    @policy.PlanName
+                </span>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+
+                    @* Policy Info *@
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Policy Information</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Customer</strong></td>
+                                <td>@policy.CustomerName</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email</strong></td>
+                                <td>@policy.CustomerEmail</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Details</strong></td>
+                                <td>@policy.PolicyDetails</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Premium</strong></td>
+                                <td class="text-success fw-bold">
+                                    ₹@policy.Premium.ToString("N2")
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Date Issued</strong></td>
+                                <td>@policy.DateIssued.ToString("dd MMM yyyy")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maturity Period</strong></td>
+                                <td>@policy.MaturityPeriod years</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lapse Date</strong></td>
+                                <td class="text-danger">
+                                    @policy.PolicyLapseDate.ToString("dd MMM yyyy")
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Paid</strong></td>
+                                <td class="text-success fw-bold">
+                                    ₹@policy.TotalPaid.ToString("N2")
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    @* Payment History *@
+                    <div class="col-md-6">
+                        <h6 class="text-muted">
+                            Payment History
+                            <span class="badge bg-success ms-2">
+                                @policy.Payments.Count payments
+                            </span>
+                        </h6>
+
+                        @if (!policy.Payments.Any())
+                        {
+                            <div class="alert alert-warning">
+                                No payments made yet.
+                            </div>
+                        }
+                        else
+                        {
+                            <table class="table table-sm table-striped">
+                                <thead class="table-success">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var payment in policy.Payments)
+                                    {
+                                        <tr>
+                                            <td>@payment.PaymentID</td>
+                                            <td class="text-success">
+                                                ₹@payment.Amount.ToString("N2")
+                                            </td>
+                                            <td>
+                                                @payment.PaymentDate
+                                                .ToString("dd MMM yyyy")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    }
+}
