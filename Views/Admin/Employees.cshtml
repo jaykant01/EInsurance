@@ -1,0 +1,111 @@
+﻿@model List<EInsurance.Models.DTOs.EmployeeListDto>
+@{
+   ViewData["Title"] = "Manage Employees";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Employees</h2>
+    <div class="d-flex gap-2">
+        <a asp-controller="Admin" asp-action="RegisterEmployee"
+           class="btn btn-warning">+ Register Employee</a>
+        <a asp-controller="Admin" asp-action="Dashboard"
+           class="btn btn-secondary">← Dashboard</a>
+    </div>
+</div>
+
+@* Search *@
+<div class="card shadow mb-3">
+    <div class="card-body py-2">
+        <form asp-controller="Admin" asp-action="Employees"
+              method="get" class="row g-2">
+            <div class="col-md-10">
+                <input type="text" name="search"
+                       value="@ViewBag.Search"
+                       class="form-control"
+                       placeholder="Search employees..." />
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-warning w-100">Search</button>
+            </div>
+            <div class="col-md-1">
+                <a asp-controller="Admin" asp-action="Employees"
+                   class="btn btn-secondary w-100">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-warning">
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No employees found.
+                        </td>
+                    </tr>
+                }
+                @foreach (var e in Model)
+                {
+                    <tr>
+                        <td>@e.EmployeeID</td>
+                        <td>@e.Username</td>
+                        <td><strong>@e.FullName</strong></td>
+                        <td>@e.Email</td>
+                        <td>
+                            <span class="badge bg-warning text-dark">@e.Role</span>
+                        </td>
+                        <td>@e.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a asp-controller="Admin"
+                                   asp-action="EditEmployee"
+                                   asp-route-id="@e.EmployeeID"
+                                   class="btn btn-sm btn-warning">✏️</a>
+
+                                <form asp-controller="Admin"
+                                      asp-action="DeleteEmployee"
+                                      method="post" class="d-inline"
+                                      onsubmit="return confirm('Delete @e.FullName?')">
+                                    <input type="hidden" name="id" value="@e.EmployeeID" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger">
+                                        🗑️
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

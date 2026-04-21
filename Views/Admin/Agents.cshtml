@@ -1,0 +1,115 @@
+﻿@model List<EInsurance.Models.DTOs.AgentListDto>
+@{
+    ViewData["Title"] = "Manage Agents";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+         @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+         @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2> Agents</h2>
+    <div class="d-flex gap-2">
+        <a asp-controller="Admin" asp-action="RegisterAgent"
+           class="btn btn-success">+ Register Agent</a>
+        <a asp-controller="Admin" asp-action="Dashboard"
+           class="btn btn-secondary">← Dashboard</a>
+    </div>
+</div>
+
+@* Search *@
+<div class="card shadow mb-3">
+    <div class="card-body py-2">
+        <form asp-controller="Admin" asp-action="Agents"
+              method="get" class="row g-2">
+            <div class="col-md-10">
+                <input type="text" name="search"
+                       value="@ViewBag.Search"
+                       class="form-control"
+                       placeholder="🔍 Search agents..." />
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-success w-100">Search</button>
+            </div>
+            <div class="col-md-1">
+                <a asp-controller="Admin" asp-action="Agents"
+                   class="btn btn-secondary w-100">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-success">
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Customers</th>
+                    <th>Commissions</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No agents found.
+                        </td>
+                    </tr>
+                }
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@a.AgentID</td>
+                        <td>@a.Username</td>
+                        <td><strong>@a.FullName</strong></td>
+                        <td>@a.Email</td>
+                        <td>
+                            <span class="badge bg-primary">@a.TotalCustomers</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">@a.TotalCommissions</span>
+                        </td>
+                        <td>@a.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a asp-controller="Admin"
+                                   asp-action="EditAgent"
+                                   asp-route-id="@a.AgentID"
+                                   class="btn btn-sm btn-warning">✏️</a>
+
+                                <form asp-controller="Admin"
+                                      asp-action="DeleteAgent"
+                                      method="post" class="d-inline"
+                                      onsubmit="return confirm('Delete @a.FullName?')">
+                                    <input type="hidden" name="id" value="@a.AgentID" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger">
+                                        🗑
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

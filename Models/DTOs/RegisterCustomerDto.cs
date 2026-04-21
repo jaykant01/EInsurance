@@ -21,7 +21,7 @@ namespace EInsurance.Models.DTOs
         public string Phone { get; set; } = string.Empty;
 
         [Required]
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [Required]
         public int AgentID { get; set; }

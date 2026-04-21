@@ -21,7 +21,7 @@ namespace EInsurance.Data
 
         public DbSet<Policy> Policies { get; set; }
 
-        public DbSet<Payment> Payment { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
         public DbSet<Commission> Commissions { get; set; }
 
