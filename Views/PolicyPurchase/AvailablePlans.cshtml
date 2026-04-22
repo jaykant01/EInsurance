@@ -1,0 +1,54 @@
+﻿@model List<EInsurance.Models.DTOs.PolicyPurchaseDtos.AvailablePlanDto>
+@{
+    ViewData["Title"] = "Available Plans";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>🛡️ Available Insurance Plans</h2>
+        <p class="text-muted">Choose a plan to see available schemes</p>
+    </div>
+    <a asp-controller="PolicyPurchase" asp-action="AvailableSchemes"
+           class="btn btn-outline-primary">
+        View All Schemes →
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        <h5>No insurance plans available yet.</h5>
+        <p>Please contact admin.</p>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var plan in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100 border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">🛡️ @plan.PlanName</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>@plan.PlanDetails</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-info fs-6">
+                                @plan.TotalSchemes Scheme(s)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-controller="PolicyPurchase"
+                               asp-action="AvailableSchemes"
+                               asp-route-planId="@plan.PlanID"
+                               class="btn btn-primary w-100">
+                            View Schemes →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

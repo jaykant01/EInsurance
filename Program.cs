@@ -62,6 +62,8 @@ builder.Services.AddScoped<IPolicyRepository, PolicyRepository>();
 builder.Services.AddScoped<IPolicyService, PolicyService>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IPolicyPurchaseRepository, PolicyPurchaseRepository>();
+builder.Services.AddScoped<IPolicyPurchaseService, PolicyPurchaseService>();
 
 
 var app = builder.Build();

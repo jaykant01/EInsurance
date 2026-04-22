@@ -1,0 +1,121 @@
+﻿@model EInsurance.Models.DTOs.PolicyPurchaseDtos.PurchasePolicyDto
+@{
+    ViewData["Title"] = "Purchase Policy";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">❌ @ViewBag.Error</div>
+        }
+
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4>Purchase Policy</h4>
+                <small>@Model.PlanName → @Model.SchemeName</small>
+            </div>
+
+            <div class="card-body">
+                <form asp-controller="PolicyPurchase"
+                      asp-action="Purchase" method="post">
+
+                    @* Hidden fields *@
+                    <input type="hidden" asp-for="SchemeID" />
+                    <input type="hidden" asp-for="SchemeName" />
+                    <input type="hidden" asp-for="PlanName" />
+                    <input type="hidden" asp-for="DateIssued"
+                           value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+
+                    @* Scheme Info (readonly) *@
+                    <div class="mb-3">
+                        <label class="form-label">Plan</label>
+                        <input type="text" class="form-control bg-light"
+                               value="@Model.PlanName" readonly />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Scheme</label>
+                        <input type="text" class="form-control bg-light"
+                               value="@Model.SchemeName" readonly />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Your Age</label>
+                        <input type="text" class="form-control bg-light"
+                               value="@ViewBag.CustomerAge years" readonly />
+                    </div>
+
+                    @* Customer Fills These *@
+                    <div class="mb-3">
+                        <label asp-for="MaturityPeriod" class="form-label">
+                            Maturity Period (Years)
+                        </label>
+                        <select asp-for="MaturityPeriod" class="form-select">
+                            @for (int i = 5; i <= 30; i += 5)
+                            {
+                                <option value="@i">@i Years</option>
+                            }
+                        </select>
+                        <span asp-validation-for="MaturityPeriod"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Premium" class="form-label">
+                            Monthly Premium (₹)
+                            <small class="text-muted">
+                                — Use Premium Calculator in UC-5
+                            </small>
+                        </label>
+                        <input asp-for="Premium" type="number"
+                               class="form-control"
+                               placeholder="Enter monthly premium amount"
+                               step="0.01" min="1" />
+                        <span asp-validation-for="Premium"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PolicyDetails" class="form-label">
+                            Policy Notes
+                        </label>
+                        <textarea asp-for="PolicyDetails"
+                                  class="form-control" rows="3"
+                                      placeholder="Any additional notes...">
+                        </textarea>
+                            <span asp-validation-for="PolicyDetails"
+                                  class="text-danger"></span>
+                        </div>
+
+                        @* Policy Lapse Date *@
+                        <div class="mb-3">
+                            <label asp-for="PolicyLapseDate" class="form-label">
+                                Policy Lapse Date
+                            </label>
+                            <input asp-for="PolicyLapseDate" type="date"
+                                   class="form-control" />
+                            <span asp-validation-for="PolicyLapseDate"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-info">
+                             Want to calculate the right premium?
+                            Use the <strong>Premium Calculator</strong>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success w-100">
+                                 Confirm Purchase
+                            </button>
+                            <a asp-controller="PolicyPurchase"
+                               asp-action="AvailableSchemes"
+                               class="btn btn-secondary w-100">Cancel</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

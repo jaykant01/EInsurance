@@ -1,0 +1,67 @@
+﻿@model List<EInsurance.Models.DTOs.PolicyPurchaseDtos.AvailableSchemeDto>
+@{
+    ViewData["Title"] = "Available Schemes";
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>📋 Available Schemes</h2>
+        <p class="text-muted">Select a scheme to purchase a policy</p>
+    </div>
+    <a asp-controller="PolicyPurchase" asp-action="AvailablePlans"
+       class="btn btn-secondary">← Back to Plans</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        <h5>No schemes available under this plan.</h5>
+        <a asp-controller="PolicyPurchase"
+           asp-action="AvailablePlans"
+           class="btn btn-primary mt-2">Browse Other Plans</a>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var scheme in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow h-100 border-0">
+
+                    <div class="card-header bg-success text-white d-flex
+                        justify-content-between align-items-center">
+                        <h6 class="mb-0">@scheme.SchemeName</h6>
+                        <span class="badge bg-light text-success">
+                            @scheme.PlanName
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="text-muted">@scheme.SchemeDetails</p>
+
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Plan</strong></td>
+                                <td>@scheme.PlanName</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scheme ID</strong></td>
+                                <td>#@scheme.SchemeID</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="card-footer">
+                        <a asp-controller="PolicyPurchase"
+                               asp-action="Purchase"
+                               asp-route-schemeId="@scheme.SchemeID"
+                               class="btn btn-success w-100">
+                            🛒 Purchase This Policy
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+}
