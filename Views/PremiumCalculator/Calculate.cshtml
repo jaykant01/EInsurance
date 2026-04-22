@@ -1,0 +1,283 @@
+﻿@model EInsurance.Models.DTOs.PremiumCalculatorInputDto
+@{
+    ViewData["Title"] = "Premium Calculator";
+}
+
+<h2 class="mb-1">🧮 Premium Calculator</h2>
+<p class="text-muted mb-4">
+    Calculate your insurance premium based on age,
+    scheme and sum assured.
+</p>
+
+<div class="row">
+
+    @* ── Input Form ── *@
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">📋 Enter Details</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="PremiumCalculator"
+                      asp-action="Calculate" method="post">
+
+                    @* Scheme *@
+                    <div class="mb-3">
+                        <label asp-for="SchemeID" class="form-label">
+                            Insurance Scheme
+                        </label>
+                        <select asp-for="SchemeID"
+                                asp-items="ViewBag.Schemes"
+                                class="form-select">
+                            <option value="">-- Select Scheme --</option>
+                        </select>
+                        <span asp-validation-for="SchemeID"
+                              class="text-danger"></span>
+                    </div>
+
+                    @* Age *@
+                    <div class="mb-3">
+                        <label asp-for="Age" class="form-label">
+                            Your Age
+                            <small class="text-muted">(18 - 70)</small>
+                        </label>
+                        <input asp-for="Age" type="number"
+                               class="form-control"
+                               min="18" max="70" />
+                        <span asp-validation-for="Age"
+                              class="text-danger"></span>
+                    </div>
+
+                    @* Maturity Period *@
+                    <div class="mb-3">
+                        <label asp-for="MaturityPeriod" class="form-label">
+                            Maturity Period (Years)
+                        </label>
+                        <select asp-for="MaturityPeriod" class="form-select">
+                            @foreach (var y in new[] { 5, 10, 15, 20, 25, 30 })
+                            {
+                                <option value="@y">@y Years</option>
+                            }
+                        </select>
+                        <span asp-validation-for="MaturityPeriod"
+                              class="text-danger"></span>
+                    </div>
+
+                    @* Sum Assured *@
+                    <div class="mb-3">
+                        <label asp-for="SumAssured" class="form-label">
+                            Sum Assured (₹)
+                        </label>
+                        <input asp-for="SumAssured" type="number"
+                               class="form-control"
+                               min="10000" max="10000000"
+                               step="10000" />
+                        <small class="text-muted">
+                            Min: ₹10,000 | Max: ₹1,00,00,000
+                        </small>
+                        <span asp-validation-for="SumAssured"
+                              class="text-danger"></span>
+                    </div>
+
+                    @* Rate of Interest *@
+                    <div class="mb-3">
+                        <label asp-for="RateOfInterest" class="form-label">
+                            Rate of Interest (%)
+                        </label>
+                        <input asp-for="RateOfInterest" type="number"
+                               class="form-control"
+                               min="0.1" max="30" step="0.1" />
+                        <small class="text-muted">
+                            Typical range: 4% - 12%
+                        </small>
+                        <span asp-validation-for="RateOfInterest"
+                              class="text-danger"></span>
+                    </div>
+
+                    @* Age Loading Info *@
+                    <div class="alert alert-info py-2">
+                        <small>
+                            <strong>Age Loading:</strong><br />
+                            18-25: No extra | 26-35: +5% |
+                            36-45: +10% | 46-55: +20% | 56+: +30%
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        🧮 Calculate Premium
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @* ── Results ── *@
+    <div class="col-md-7">
+
+        @if (ViewBag.Result != null)
+        {
+            var result = (EInsurance.Models.DTOs.PremiumCalculatorResultDto)
+                          ViewBag.Result;
+
+            @* Summary Cards *@
+            <div class="row mb-3">
+                <div class="col-6 mb-3">
+                    <div class="card text-white bg-success shadow text-center">
+                        <div class="card-body py-3">
+                            <h6 class="mb-0">Monthly Premium</h6>
+                            <h3 class="mb-0">
+                                ₹@result.MonthlyPremium.ToString("N2")
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="card text-white bg-primary shadow text-center">
+                        <div class="card-body py-3">
+                            <h6 class="mb-0">Annual Premium</h6>
+                            <h3 class="mb-0">
+                                ₹@result.AnnualPremium.ToString("N2")
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="card text-white bg-warning shadow text-center">
+                        <div class="card-body py-3">
+                            <h6 class="mb-0">Quarterly Premium</h6>
+                            <h3 class="mb-0">
+                                ₹@result.QuarterlyPremium.ToString("N2")
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-3">
+                    <div class="card text-white bg-danger shadow text-center">
+                        <div class="card-body py-3">
+                            <h6 class="mb-0">Total Payable</h6>
+                            <h3 class="mb-0">
+                                ₹@result.TotalAmountPayable.ToString("N2")
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Detail Table *@
+            <div class="card shadow mb-3">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0">📊 Calculation Summary</h6>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <tr class="table-light">
+                            <td><strong>Scheme</strong></td>
+                            <td>@result.PlanName → @result.SchemeName</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Age</strong></td>
+                            <td>@result.Age years</td>
+                        </tr>
+                        <tr class="table-light">
+                            <td><strong>Sum Assured</strong></td>
+                            <td>₹@result.SumAssured.ToString("N2")</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rate of Interest</strong></td>
+                            <td>@result.RateOfInterest %</td>
+                        </tr>
+                        <tr class="table-light">
+                            <td><strong>Maturity Period</strong></td>
+                            <td>@result.MaturityPeriod Years</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maturity Date</strong></td>
+                            <td>
+                                @result.MaturityDate.ToString("dd MMM yyyy")
+                            </td>
+                        </tr>
+                        <tr class="table-light">
+                            <td><strong>Total Interest</strong></td>
+                            <td class="text-success">
+                                ₹@result.TotalInterest.ToString("N2")
+                            </td>
+                        </tr>
+                        <tr class="table-success">
+                            <td><strong>Total Payable</strong></td>
+                            <td>
+                                <strong>
+                                    ₹@result.TotalAmountPayable.ToString("N2")
+                                </strong>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            @* Yearly Breakdown *@
+            <div class="card shadow">
+                <div class="card-header bg-info text-white d-flex
+                    justify-content-between align-items-center">
+                    <h6 class="mb-0">📅 Yearly Breakdown</h6>
+                    <small>First 5 years shown</small>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm table-striped mb-0">
+                        <thead class="table-info">
+                            <tr>
+                                <th>Year</th>
+                                <th>Premium Paid</th>
+                                <th>Interest Earned</th>
+                                <th>Total Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var row in result.YearlyBreakdown.Take(5))
+                            {
+                                <tr>
+                                    <td>Year @row.Year</td>
+                                    <td>₹@row.PremiumPaid.ToString("N2")</td>
+                                    <td class="text-success">
+                                        ₹@row.InterestEarned.ToString("N2")
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            ₹@row.TotalValue.ToString("N2")
+                                        </strong>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @* Go to Purchase Button *@
+            <div class="mt-3">
+                <a asp-controller="PolicyPurchase"
+                       asp-action="AvailablePlans"
+                       class="btn btn-success w-100">
+                    🛒 Ready to Buy? Browse Policies →
+                </a>
+            </div>
+        }
+        else
+        {
+            @* Placeholder before calculation *@
+            <div class="card shadow h-100 border-0 bg-light">
+                <div class="card-body d-flex flex-column
+                    justify-content-center align-items-center text-center"
+                     style="min-height: 400px">
+                    <h1 class="display-1">🧮</h1>
+                    <h4 class="text-muted">
+                        Fill in the form and click Calculate
+                    </h4>
+                    <p class="text-muted">
+                        Your premium breakdown will appear here.
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
