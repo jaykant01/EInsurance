@@ -1,0 +1,140 @@
+﻿@model List<EInsurance.Models.DTOs.AgentCommissionSummaryDto>
+@{
+    ViewData["Title"] = "Commission Overview";
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+         @TempData["Success"]
+        <button type="button" class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+         @TempData["Error"]
+        <button type="button" class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2> Commission Overview</h2>
+        <p class="text-muted">All agents and their commission summary</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-controller="Commission"
+               asp-action="Calculate"
+               class="btn btn-primary">
+             Calculate Commission
+        </a>
+        <a asp-controller="Admin"
+           asp-action="Dashboard"
+           class="btn btn-secondary">← Dashboard</a>
+    </div>
+</div>
+
+@* Summary Stats *@
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary shadow text-center">
+            <div class="card-body py-3">
+                <h3>@Model.Count</h3>
+                <small>Total Agents</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success shadow text-center">
+            <div class="card-body py-3">
+                <h3>@Model.Sum(a => a.TotalPoliciesSold)</h3>
+                <small>Total Policies Sold</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning shadow text-center">
+            <div class="card-body py-3">
+                <h3>₹@Model.Sum(a => a.TotalCommissionEarned).ToString("N0")</h3>
+                <small>Total Commission Paid</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info shadow text-center">
+            <div class="card-body py-3">
+                <h3>
+                    ₹@(Model.Any()
+                                            ? (Model.Sum(a => a.TotalCommissionEarned)
+                                               / Math.Max(Model.Count, 1)).ToString("N0")
+                                            : "0")
+                </h3>
+                <small>Avg Commission/Agent</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Agents Table *@
+<div class="card shadow">
+    <div class="card-body">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Agent Name</th>
+                    <th>Email</th>
+                    <th>Policies Sold</th>
+                    <th>Total Commission</th>
+                    <th>Last Commission</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7"
+                            class="text-center text-muted py-4">
+                            No agents found.
+                        </td>
+                    </tr>
+                }
+                @foreach (var agent in Model.OrderByDescending(
+                    a => a.TotalCommissionEarned))
+                {
+                    <tr>
+                        <td>@agent.AgentID</td>
+                        <td><strong>@agent.AgentName</strong></td>
+                        <td>@agent.Email</td>
+                        <td>
+                            <span class="badge bg-primary">
+                                @agent.TotalPoliciesSold
+                            </span>
+                        </td>
+                        <td class="text-success fw-bold">
+                            ₹@agent.TotalCommissionEarned.ToString("N2")
+                        </td>
+                        <td>
+                            @(agent.LastCommissionDate.HasValue
+                                ? agent.LastCommissionDate.Value
+                                    .ToString("dd MMM yyyy")
+                                : "Not yet calculated")
+                        </td>
+                        <td>
+                            <a asp-controller="Commission"
+                                   asp-action="Calculate"
+                                   asp-route-agentId="@agent.AgentID"
+                                   asp-route-commissionRate="10"
+                                   class="btn btn-sm btn-primary">
+                                 Calculate
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

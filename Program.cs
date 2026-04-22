@@ -65,7 +65,8 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IPolicyPurchaseRepository, PolicyPurchaseRepository>();
 builder.Services.AddScoped<IPolicyPurchaseService, PolicyPurchaseService>();
 builder.Services.AddScoped<IPremiumCalculatorService, PremiumCalculatorService>();
-
+builder.Services.AddScoped<ICommissionRepository, CommissionRepository>();
+builder.Services.AddScoped<ICommissionService, CommissionService>();
 
 var app = builder.Build();
 

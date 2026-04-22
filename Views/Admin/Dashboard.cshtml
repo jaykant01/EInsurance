@@ -166,4 +166,31 @@
         </div>
     </div>
 
+    @* Commission Card *@
+    <div class="col-md-4 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"> Commission Management</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    Calculate and manage agent commissions.
+                </p>
+                <ul class="list-unstyled">
+                    <li> View all agents</li>
+                    <li> Select commission rate</li>
+                    <li> Calculate per policy</li>
+                    <li> Save to database</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Commission"
+                       asp-action="Index"
+                       class="btn btn-success w-100">
+                    View Commissions
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
