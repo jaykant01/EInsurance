@@ -1,0 +1,155 @@
+﻿@model List<EInsurance.Models.DTOs.CustomerPaymentListDto>
+@{
+    ViewData["Title"] = "My Payments";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+         @TempData["Success"]
+        <button type="button" class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+         @TempData["Error"]
+        <button type="button" class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>💳 My Payments</h2>
+        <p class="text-muted">
+            View and download receipts for all your payments
+        </p>
+    </div>
+    <a asp-controller="Policy"
+       asp-action="MyPolicies"
+       class="btn btn-secondary">← My Policies</a>
+</div>
+
+@* Summary Cards *@
+@if (Model.Any())
+{
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow text-center">
+                <div class="card-body py-3">
+                    <h3>@Model.Count</h3>
+                    <small>Total Payments</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow text-center">
+                <div class="card-body py-3">
+                    <h3>
+                        ₹@(Model.Sum(p => p.Amount).ToString("N2"))
+                    </h3>
+                    <small>Total Amount Paid</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info shadow text-center">
+                <div class="card-body py-3">
+                    <h3>
+                        @Model.Select(p => p.PolicyID).Distinct().Count()
+                    </h3>
+                    <small>Policies Covered</small>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@* Payments Table *@
+<div class="card shadow">
+    <div class="card-body">
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <h1 class="display-1">💳</h1>
+                <h4 class="text-muted">No payments found.</h4>
+                <p class="text-muted">
+                    Purchase a policy to see payments here.
+                </p>
+                <a asp-controller="PolicyPurchase"
+                       asp-action="AvailablePlans"
+                       class="btn btn-primary">
+                     Browse Policies
+                </a>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover table-striped align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Receipt No</th>
+                        <th>Policy #</th>
+                        <th>Plan → Scheme</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var payment in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    @payment.ReceiptNumber
+                                </span>
+                            </td>
+                            <td>#@payment.PolicyID</td>
+                            <td>
+                                <small>
+                                    @payment.PlanName → @payment.SchemeName
+                                </small>
+                            </td>
+                            <td class="text-success fw-bold">
+                                ₹@payment.Amount.ToString("N2")
+                            </td>
+                            <td>
+                                @payment.PaymentDate.ToString("dd MMM yyyy")
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a asp-controller="Receipt"
+                                           asp-action="ViewReceipt"
+                                           asp-route-id="@payment.PaymentID"
+                                           class="btn btn-sm btn-info">
+                                         View
+                                    </a>
+                                    <a asp-controller="Receipt"
+                                           asp-action="Download"
+                                           asp-route-id="@payment.PaymentID"
+                                           class="btn btn-sm btn-success">
+                                         Download
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot class="table-dark">
+                    <tr>
+                        <td colspan="3">
+                            <strong>Total</strong>
+                        </td>
+                        <td class="text-success fw-bold">
+                            ₹@(Model.Sum(p => p.Amount).ToString("N2"))
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+    </div>
+</div>
