@@ -1,0 +1,358 @@
+﻿@model EInsurance.Models.DTOs.PaymentReceiptDto
+@{
+    ViewData["Title"] = "Receipt " + Model.ReceiptNumber;
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+
+        @* Action Buttons — outside receipt *@
+        <div class="d-flex justify-content-between mb-3">
+            <a asp-controller="Receipt"
+                   asp-action="MyPayments"
+                   class="btn btn-outline-secondary btn-sm">
+                ← Back to Payments
+            </a>
+            <div class="d-flex gap-2">
+                <button onclick="window.print()"
+                        class="btn btn-outline-dark btn-sm">
+                    🖨️ Print
+                </button>
+                <a asp-controller="Receipt"
+                       asp-action="Download"
+                       asp-route-id="@Model.PaymentID"
+                       class="btn btn-dark btn-sm">
+                    ⬇️ Download PDF
+                </a>
+            </div>
+        </div>
+
+        @* ── Receipt ── *@
+        <div id="receipt" style="
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+
+            @* ── Header ── *@
+            <div style="
+                background: #111111;
+                padding: 32px 40px;
+                text-align: center;">
+
+                <div style="
+                    color: #ffffff;
+                    font-size: 22px;
+                    font-weight: 700;
+                    letter-spacing: 3px;">
+                    eINSURANCE
+                </div>
+
+                <div style="
+                    color: #aaaaaa;
+                    font-size: 10px;
+                    letter-spacing: 2px;
+                    margin-top: 4px;">
+                    ONLINE INSURANCE MANAGEMENT
+                </div>
+
+                <div style="
+                    border-top: 1px solid #333;
+                    margin: 20px 0 16px;">
+                </div>
+
+                <div style="
+                    color: #ffffff;
+                    font-size: 12px;
+                    letter-spacing: 2px;
+                    font-weight: 600;">
+                    PAYMENT RECEIPT
+                </div>
+
+                <div style="
+                    color: #888888;
+                    font-size: 11px;
+                    margin-top: 4px;">
+                    @Model.ReceiptNumber
+                </div>
+
+            </div>
+
+            @* ── Status Bar ── *@
+            <div style="
+                background: #f5f5f5;
+                border-bottom: 1px solid #e8e8e8;
+                padding: 12px 40px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;">
+
+                <div style="font-size: 11px; color: #888;">
+                    @Model.PaymentDate.ToString("dd MMMM yyyy")
+                    &nbsp;·&nbsp;
+                    @Model.PaymentDate.ToString("HH:mm")
+                </div>
+
+                <div style="
+                    background: #111;
+                    color: #fff;
+                    font-size: 10px;
+                    font-weight: 700;
+                    letter-spacing: 2px;
+                    padding: 4px 12px;">
+                    PAID
+                </div>
+
+            </div>
+
+            @* ── Body ── *@
+            <div style="padding: 32px 40px;">
+
+                @* Amount — Hero *@
+                <div style="
+                    text-align: center;
+                    padding: 24px 0 28px;
+                    border-bottom: 1px solid #eeeeee;">
+
+                    <div style="
+                        font-size: 11px;
+                        color: #999;
+                        letter-spacing: 2px;
+                        margin-bottom: 8px;">
+                        AMOUNT PAID
+                    </div>
+
+                    <div style="
+                        font-size: 42px;
+                        font-weight: 800;
+                        color: #111;
+                        line-height: 1;">
+                        ₹@Model.Amount.ToString("N2")
+                    </div>
+
+                    <div style="
+                        font-size: 11px;
+                        color: #999;
+                        margin-top: 8px;">
+                        Policy #@Model.PolicyID &nbsp;·&nbsp;
+                        @Model.PlanName → @Model.SchemeName
+                    </div>
+
+                </div>
+
+                @* Customer & Payment Info *@
+                <div style="
+                    display: flex;
+                    gap: 40px;
+                    padding: 24px 0;
+                    border-bottom: 1px solid #eeeeee;">
+
+                    @* Left — Customer *@
+                    <div style="flex: 1;">
+                        <div style="
+                            font-size: 9px;
+                            font-weight: 700;
+                            letter-spacing: 2px;
+                            color: #999;
+                            margin-bottom: 14px;">
+                            CUSTOMER
+                        </div>
+
+                        <div style="
+                            font-size: 13px;
+                            font-weight: 700;
+                            color: #111;
+                            margin-bottom: 4px;">
+                            @Model.CustomerName
+                        </div>
+                        <div style="font-size: 11px; color: #666; margin-bottom: 3px;">
+                            @Model.CustomerEmail
+                        </div>
+                        <div style="font-size: 11px; color: #666; margin-bottom: 3px;">
+                            @Model.CustomerPhone
+                        </div>
+                        <div style="font-size: 11px; color: #999;">
+                            Agent: @Model.AgentName
+                        </div>
+                    </div>
+
+                    @* Divider *@
+                    <div style="
+                        width: 1px;
+                        background: #eeeeee;">
+                    </div>
+
+                    @* Right — Payment *@
+                    <div style="flex: 1;">
+                        <div style="
+                            font-size: 9px;
+                            font-weight: 700;
+                            letter-spacing: 2px;
+                            color: #999;
+                            margin-bottom: 14px;">
+                            RECEIPT DETAILS
+                        </div>
+
+                        @* Helper rows *@
+                        @{
+                            void InfoRow(string label, string value)
+                            {
+                                <div style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    margin-bottom: 8px;">
+                                    <span style="font-size:11px;color:#999;">
+                                        @label
+                                    </span>
+                                    <span style="font-size:11px;
+                                        font-weight:600;
+                                        color:#111;">
+                                        @value
+                                    </span>
+                                </div>
+                            }
+                        }
+
+                        @{
+                            InfoRow("Receipt No", Model.ReceiptNumber);
+                        }
+                        @{
+                            InfoRow("Payment Date",
+                                Model.PaymentDate.ToString("dd MMM yyyy"));
+                        }
+                        @{
+                            InfoRow("Policy ID",
+                                "#" + Model.PolicyID);
+                        }
+                        @{
+                            InfoRow("Monthly Premium",
+                                "₹" + Model.Premium.ToString("N2"));
+                        }
+                    </div>
+
+                </div>
+
+                @* Policy Details *@
+                <div style="padding: 24px 0;
+                    border-bottom: 1px solid #eeeeee;">
+
+                    <div style="
+                        font-size: 9px;
+                        font-weight: 700;
+                        letter-spacing: 2px;
+                        color: #999;
+                        margin-bottom: 14px;">
+                        POLICY DETAILS
+                    </div>
+
+                    <div style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 12px;">
+
+                        @{
+                            void PolicyRow(string label, string value)
+                            {
+                                <div>
+                                    <div style="font-size:10px;
+                                        color:#999;
+                                        margin-bottom:2px;">
+                                        @label
+                                    </div>
+                                    <div style="font-size:12px;
+                                        font-weight:600;
+                                        color:#111;">
+                                        @value
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        @{
+                            PolicyRow("Plan", Model.PlanName);
+                        }
+                        @{
+                            PolicyRow("Scheme", Model.SchemeName);
+                        }
+                        @{
+                            PolicyRow("Date Issued",
+                                Model.DateIssued.ToString("dd MMM yyyy"));
+                        }
+                        @{
+                            PolicyRow("Lapse Date",
+                                Model.PolicyLapseDate.ToString("dd MMM yyyy"));
+                        }
+                        @{
+                            PolicyRow("Policy Notes",
+                                Model.PolicyDetails);
+                        }
+
+                    </div>
+                </div>
+
+                @* Total Row *@
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 20px 0 0;">
+
+                    <div style="font-size: 13px;
+                        font-weight: 700;
+                        color: #111;
+                        letter-spacing: 1px;">
+                        TOTAL PAID
+                    </div>
+
+                    <div style="font-size: 20px;
+                        font-weight: 800;
+                        color: #111;">
+                        ₹@Model.Amount.ToString("N2")
+                    </div>
+
+                </div>
+
+            </div>
+
+            @* ── Footer ── *@
+            <div style="
+                background: #f9f9f9;
+                border-top: 1px solid #eeeeee;
+                padding: 20px 40px;
+                text-align: center;">
+
+                <div style="
+                    font-size: 10px;
+                    color: #bbb;
+                    line-height: 1.8;">
+                    This is a computer generated receipt and
+                    does not require a signature.<br />
+                    For queries contact
+                    <span style="color:#888;">
+                        support@einsurance.com
+                    </span><br />
+                    Generated on
+                    @DateTime.Now.ToString("dd MMM yyyy, HH:mm")
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@* Print styles *@
+<style>
+    @@media print {
+        nav, .d-flex.justify-content-between.mb-3,
+        .btn {
+
+            display: none !important;
+        }
+        #receipt {
+            box-shadow: none !important;
+            border: none !important;
+        }
+    }
+</style>

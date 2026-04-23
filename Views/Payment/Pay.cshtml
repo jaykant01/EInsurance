@@ -1,0 +1,128 @@
+﻿@model EInsurance.Models.DTOs.RazorpayOrderDto
+@{
+    ViewData["Title"] = "Make Payment";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+
+            @* Header *@
+            <div class="card-header bg-success text-white text-center">
+                <h4>Pay Premium</h4>
+            </div>
+
+            <div class="card-body">
+
+                @* Policy Info *@
+                <div class="alert alert-info">
+                    <h6 class="mb-2">Payment Summary</h6>
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr>
+                            <td><strong>Policy</strong></td>
+                            <td>@Model.PolicyDescription</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amount</strong></td>
+                            <td class="text-success fw-bold fs-5">
+                                ₹@Model.Amount.ToString("N2")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Currency</strong></td>
+                            <td>INR</td>
+                        </tr>
+                    </table>
+                </div>
+
+                @* Test Mode Warning *@
+                <div class="alert alert-warning">
+                    <strong>Test Mode</strong><br />
+                    Use test card: <strong>4100 2800 0000 1007</strong><br />
+                    Expiry: Any future date | CVV: Any 3 digits<br />
+                    OTP: <strong>1234</strong>
+                </div>
+
+                @* Pay Button *@
+                <button id="payBtn"
+                        class="btn btn-success w-100 btn-lg">
+                    Pay ₹@Model.Amount.ToString("N2")
+                </button>
+
+                <a asp-controller="Policy"
+                       asp-action="MyPolicies"
+                       class="btn btn-secondary w-100 mt-2">
+                    Cancel
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Hidden form for verification *@
+<form id="verifyForm"
+      asp-controller="Payment"
+      asp-action="Verify"
+      method="post">
+    <input type="hidden" name="RazorpayOrderId"
+           id="razorpay_order_id" />
+    <input type="hidden" name="RazorpayPaymentId"
+           id="razorpay_payment_id" />
+    <input type="hidden" name="RazorpaySignature"
+           id="razorpay_signature" />
+    <input type="hidden" name="PolicyID"
+           value="@Model.PolicyID" />
+    <input type="hidden" name="Amount"
+           value="@Model.Amount" />
+</form>
+
+@section Scripts {
+    @* Razorpay Checkout Script *@
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById('payBtn').onclick = function () {
+
+        var options = {
+        key:         '@Model.KeyId',
+        amount:      '@((int)(Model.Amount * 100))',
+        currency:    'INR',
+        name:        'eInsurance',
+        description: '@Model.PolicyDescription',
+        order_id:    '@Model.OrderId',
+
+        prefill: {
+        name:    '@Model.CustomerName',
+        email:   '@Model.CustomerEmail',
+        contact: '@Model.CustomerPhone'
+        },
+
+        theme: {
+        color: '#185FA5'
+        },
+
+        handler: function (response) {
+        // Payment success — fill hidden form and submit
+        document.getElementById('razorpay_order_id')
+        .value = response.razorpay_order_id;
+        document.getElementById('razorpay_payment_id')
+        .value = response.razorpay_payment_id;
+        document.getElementById('razorpay_signature')
+        .value = response.razorpay_signature;
+
+        // Submit to verify endpoint
+        document.getElementById('verifyForm').submit();
+        },
+
+        modal: {
+        ondismiss: function () {
+        alert('Payment cancelled.');
+        }
+        }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+        };
+    </script>
+}

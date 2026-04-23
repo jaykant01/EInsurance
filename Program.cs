@@ -67,6 +67,10 @@ builder.Services.AddScoped<IPolicyPurchaseService, PolicyPurchaseService>();
 builder.Services.AddScoped<IPremiumCalculatorService, PremiumCalculatorService>();
 builder.Services.AddScoped<ICommissionRepository, CommissionRepository>();
 builder.Services.AddScoped<ICommissionService, CommissionService>();
+builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
+builder.Services.AddScoped<IReceiptService, ReceiptService>();
+builder.Services.AddScoped<PdfReceiptHelper>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 var app = builder.Build();
 
