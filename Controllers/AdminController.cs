@@ -8,6 +8,8 @@ namespace EInsurance.Controllers
     {
         private readonly IAdminService _adminService;
         private readonly IAuthService _authService;
+        private const int PageSize = 5;
+
 
         public AdminController(IAdminService adminService, IAuthService authService)
         {
@@ -35,14 +37,11 @@ namespace EInsurance.Controllers
 
         // CUSTOMERS
 
-        public async Task<IActionResult> Customers(string search = "")
+        public async Task<IActionResult> Customers(string search = "", int page = 1)
         {
             if (!IsAdmin()) return RedirectIfNotAdmin();
-            var customers = string.IsNullOrEmpty(search)
-                ? await _adminService.GetAllCustomersAsync()
-                : await _adminService.SearchCustomersAsync(search);
-            ViewBag.Search = search;
-            return View(customers);
+            var result = await _adminService.GetAllCustomersAsync(search, page, PageSize);
+            return View(result);
         }
 
         [HttpGet]
@@ -75,14 +74,11 @@ namespace EInsurance.Controllers
 
         // AGENTS
 
-        public async Task<IActionResult> Agents(string search = "")
+        public async Task<IActionResult> Agents(string search = "", int page = 1)
         {
             if (!IsAdmin()) return RedirectIfNotAdmin();
-            var agents = string.IsNullOrEmpty(search)
-                ? await _adminService.GetAllAgentsAsync()
-                : await _adminService.SearchAgentsAsync(search);
-            ViewBag.Search = search;
-            return View(agents);
+            var result = await _adminService.GetAllAgentsAsync(search, page, PageSize);
+            return View(result);
         }
 
         [HttpGet]
@@ -132,14 +128,11 @@ namespace EInsurance.Controllers
 
         // EMPLOYEES
 
-        public async Task<IActionResult> Employees(string search = "")
+        public async Task<IActionResult> Employees(string search = "", int page = 1)
         {
             if (!IsAdmin()) return RedirectIfNotAdmin();
-            var employees = string.IsNullOrEmpty(search)
-                ? await _adminService.GetAllEmployeesAsync()
-                : await _adminService.SearchEmployeesAsync(search);
-            ViewBag.Search = search;
-            return View(employees);
+            var result = await _adminService.GetAllEmployeesAsync(search, page, PageSize);
+            return View(result);
         }
 
         [HttpGet]

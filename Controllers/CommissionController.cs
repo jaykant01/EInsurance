@@ -24,9 +24,9 @@ namespace EInsurance.Controllers
         //  Load Agent Dropdown
         private async Task LoadAgentDropdownAsync()
         {
-            var agents = await _adminService.GetAllAgentsAsync();
+            var agents = await _adminService.GetAllAgentsAsync("", 1, int.MaxValue);
             ViewBag.Agents = new SelectList(
-                agents, "AgentID", "FullName");
+                agents.Items, "AgentID", "FullName");
         }
 
         // Shows all agents with commission summary

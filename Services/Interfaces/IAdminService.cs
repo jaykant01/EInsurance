@@ -8,22 +8,19 @@ namespace EInsurance.Services.Interfaces
         Task<DashboardStatsDto> GetDashboardStatsAsync();
 
         // Customers
-        Task<List<CustomerListDto>> GetAllCustomersAsync();
-        Task<List<CustomerListDto>> SearchCustomersAsync(string search);
+        Task<PagedResultDto<CustomerListDto>> GetAllCustomersAsync(string search, int page, int pageSize);
         Task<EditCustomerDto?> GetCustomerForEditAsync(int id);
         Task<(bool Success, string Message)> UpdateCustomerAsync(EditCustomerDto dto);
         Task<(bool Success, string Message)> DeleteCustomerAsync(int id);
 
         // Agents
-        Task<List<AgentListDto>> GetAllAgentsAsync();
-        Task<List<AgentListDto>> SearchAgentsAsync(string search);
+        Task<PagedResultDto<AgentListDto>> GetAllAgentsAsync(string search, int page, int pageSize);
         Task<EditAgentDto?> GetAgentForEditAsync(int id);
         Task<(bool Success, string Message)> UpdateAgentAsync(EditAgentDto dto);
         Task<(bool Success, string Message)> DeleteAgentAsync(int id);
 
         // Employees
-        Task<List<EmployeeListDto>> GetAllEmployeesAsync();
-        Task<List<EmployeeListDto>> SearchEmployeesAsync(string search);
+        Task<PagedResultDto<EmployeeListDto>> GetAllEmployeesAsync(string search, int page, int pageSize);
         Task<EditEmployeeDto?> GetEmployeeForEditAsync(int id);
         Task<(bool Success, string Message)> UpdateEmployeeAsync(EditEmployeeDto dto);
         Task<(bool Success, string Message)> DeleteEmployeeAsync(int id);

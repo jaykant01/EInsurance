@@ -18,11 +18,9 @@ namespace EInsurance.Services.Implementations
             => await _adminRepo.GetDashboardStatsAsync();
 
         // Customers 
-        public async Task<List<CustomerListDto>> GetAllCustomersAsync()
-            => await _adminRepo.GetAllCustomersAsync();
+        public async Task<PagedResultDto<CustomerListDto>> GetAllCustomersAsync(string search, int page, int pageSize)
+            => await _adminRepo.GetAllCustomersAsync(search, page, pageSize);
 
-        public async Task<List<CustomerListDto>> SearchCustomersAsync(string search)
-            => await _adminRepo.SearchCustomersAsync(search);
 
         public async Task<EditCustomerDto?> GetCustomerForEditAsync(int id)
         {
@@ -59,11 +57,8 @@ namespace EInsurance.Services.Implementations
         }
 
         //  Agents
-        public async Task<List<AgentListDto>> GetAllAgentsAsync()
-            => await _adminRepo.GetAllAgentsAsync();
-
-        public async Task<List<AgentListDto>> SearchAgentsAsync(string search)
-            => await _adminRepo.SearchAgentsAsync(search);
+        public async Task<PagedResultDto<AgentListDto>> GetAllAgentsAsync(string search, int page, int pageSize)
+            => await _adminRepo.GetAllAgentsAsync(search, page, pageSize);
 
         public async Task<EditAgentDto?> GetAgentForEditAsync(int id)
         {
@@ -96,11 +91,8 @@ namespace EInsurance.Services.Implementations
         }
 
         // Employees
-        public async Task<List<EmployeeListDto>> GetAllEmployeesAsync()
-            => await _adminRepo.GetAllEmployeesAsync();
-
-        public async Task<List<EmployeeListDto>> SearchEmployeesAsync(string search)
-            => await _adminRepo.SearchEmployeesAsync(search);
+        public async Task<PagedResultDto<EmployeeListDto>> GetAllEmployeesAsync(string search, int page, int pageSize)
+           => await _adminRepo.GetAllEmployeesAsync(search, page, pageSize);
 
         public async Task<EditEmployeeDto?> GetEmployeeForEditAsync(int id)
         {

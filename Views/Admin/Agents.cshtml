@@ -1,4 +1,4 @@
-﻿@model List<EInsurance.Models.DTOs.AgentListDto>
+﻿@model EInsurance.Models.DTOs.PagedResultDto<EInsurance.Models.DTOs.AgentListDto>
 @{
     ViewData["Title"] = "Manage Agents";
 }
@@ -6,20 +6,20 @@
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show">
-         @TempData["Success"]
+        @TempData["Success"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show">
-         @TempData["Error"]
+        @TempData["Error"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2> Agents</h2>
+    <h2>Agents</h2>
     <div class="d-flex gap-2">
         <a asp-controller="Admin" asp-action="RegisterAgent"
            class="btn btn-success">+ Register Agent</a>
@@ -35,7 +35,7 @@
               method="get" class="row g-2">
             <div class="col-md-10">
                 <input type="text" name="search"
-                       value="@ViewBag.Search"
+                       value="@Model.Search"
                        class="form-control"
                        placeholder="🔍 Search agents..." />
             </div>
@@ -52,6 +52,13 @@
 
 <div class="card shadow">
     <div class="card-body">
+
+        <small class="text-muted d-block mb-2">
+            Showing <strong>@Model.Items.Count</strong> of
+            <strong>@Model.TotalCount</strong> agents
+            (Page <strong>@Model.CurrentPage</strong> of <strong>@Model.TotalPages</strong>)
+        </small>
+
         <table class="table table-hover table-striped align-middle">
             <thead class="table-success">
                 <tr>
@@ -66,7 +73,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (!Model.Any())
+                @if (!Model.Items.Any())
                 {
                     <tr>
                         <td colspan="8" class="text-center text-muted py-4">
@@ -74,19 +81,15 @@
                         </td>
                     </tr>
                 }
-                @foreach (var a in Model)
+                @foreach (var a in Model.Items)
                 {
                     <tr>
                         <td>@a.AgentID</td>
                         <td>@a.Username</td>
                         <td><strong>@a.FullName</strong></td>
                         <td>@a.Email</td>
-                        <td>
-                            <span class="badge bg-primary">@a.TotalCustomers</span>
-                        </td>
-                        <td>
-                            <span class="badge bg-success">@a.TotalCommissions</span>
-                        </td>
+                        <td><span class="badge bg-primary">@a.TotalCustomers</span></td>
+                        <td><span class="badge bg-success">@a.TotalCommissions</span></td>
                         <td>@a.CreatedAt.ToString("dd/MM/yyyy")</td>
                         <td>
                             <div class="d-flex gap-1">
@@ -94,16 +97,12 @@
                                    asp-action="EditAgent"
                                    asp-route-id="@a.AgentID"
                                    class="btn btn-sm btn-warning">✏️</a>
-
                                 <form asp-controller="Admin"
                                       asp-action="DeleteAgent"
                                       method="post" class="d-inline"
                                       onsubmit="return confirm('Delete @a.FullName?')">
                                     <input type="hidden" name="id" value="@a.AgentID" />
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger">
-                                        🗑
-                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-danger">🗑</button>
                                 </form>
                             </div>
                         </td>
@@ -111,5 +110,35 @@
                 }
             </tbody>
         </table>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Agent pagination">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-controller="Admin" asp-action="Agents"
+                           asp-route-page="@(Model.CurrentPage - 1)"
+                           asp-route-search="@Model.Search">← Prev</a>
+                    </li>
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               asp-controller="Admin" asp-action="Agents"
+                               asp-route-page="@i"
+                               asp-route-search="@Model.Search">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-controller="Admin" asp-action="Agents"
+                           asp-route-page="@(Model.CurrentPage + 1)"
+                           asp-route-search="@Model.Search">Next →</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+
     </div>
 </div>

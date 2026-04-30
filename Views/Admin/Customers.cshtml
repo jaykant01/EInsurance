@@ -1,39 +1,38 @@
-﻿@model List<EInsurance.Models.DTOs.CustomerListDto>
+﻿@model EInsurance.Models.DTOs.PagedResultDto<EInsurance.Models.DTOs.CustomerListDto>
 @{
     ViewData["Title"] = "Manage Customers";
 }
 
+@* Alerts *@
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show">
-         @TempData["Success"]
+        @TempData["Success"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show">
-         @TempData["Error"]
+        @TempData["Error"]
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 }
 
+@* Header *@
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2> Customers</h2>
-    <a asp-controller="Admin" asp-action="Dashboard"
-       class="btn btn-secondary">← Dashboard</a>
+    <h2>👥 Customers</h2>
+    <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-secondary">← Dashboard</a>
 </div>
 
 @* Search *@
 <div class="card shadow mb-3">
     <div class="card-body py-2">
-        <form asp-controller="Admin" asp-action="Customers"
-              method="get" class="row g-2">
+        <form asp-controller="Admin" asp-action="Customers" method="get" class="row g-2">
             <div class="col-md-10">
-                <input type="text" name="search"
-                       value="@ViewBag.Search"
+                <input type="text" name="search" value="@Model.Search"
                        class="form-control"
-                       placeholder=" Search by name, email or phone..." />
+                       placeholder="🔍 Search by name, email or phone..." />
             </div>
             <div class="col-md-1">
                 <button type="submit" class="btn btn-primary w-100">Search</button>
@@ -49,6 +48,16 @@
 @* Table *@
 <div class="card shadow">
     <div class="card-body">
+
+        @* Record Info *@
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="text-muted">
+                Showing <strong>@Model.Items.Count</strong> of
+                <strong>@Model.TotalCount</strong> customers
+                (Page <strong>@Model.CurrentPage</strong> of <strong>@Model.TotalPages</strong>)
+            </small>
+        </div>
+
         <table class="table table-hover table-striped align-middle">
             <thead class="table-primary">
                 <tr>
@@ -64,7 +73,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (!Model.Any())
+                @if (!Model.Items.Any())
                 {
                     <tr>
                         <td colspan="9" class="text-center text-muted py-4">
@@ -72,7 +81,7 @@
                         </td>
                     </tr>
                 }
-                @foreach (var c in Model)
+                @foreach (var c in Model.Items)
                 {
                     <tr>
                         <td>@c.CustomerID</td>
@@ -102,10 +111,7 @@
                                       method="post" class="d-inline"
                                       onsubmit="return confirm('Delete @c.FullName?')">
                                     <input type="hidden" name="id" value="@c.CustomerID" />
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger">
-                                        🗑️
-                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
                                 </form>
                             </div>
                         </td>
@@ -113,5 +119,47 @@
                 }
             </tbody>
         </table>
+
+        @* Pagination Controls *@
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Customer pagination">
+                <ul class="pagination justify-content-center mb-0">
+
+                    @* Previous Button *@
+                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link"
+                               asp-controller="Admin" asp-action="Customers"
+                               asp-route-page="@(Model.CurrentPage - 1)"
+                               asp-route-search="@Model.Search">
+                            ← Prev
+                        </a>
+                    </li>
+
+                    @* Page Number Buttons *@
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               asp-controller="Admin" asp-action="Customers"
+                               asp-route-page="@i"
+                               asp-route-search="@Model.Search">@i</a>
+                        </li>
+                    }
+
+                    @* Next Button *@
+                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                        <a class="page-link"
+                               asp-controller="Admin" asp-action="Customers"
+                               asp-route-page="@(Model.CurrentPage + 1)"
+                               asp-route-search="@Model.Search">
+                            Next →
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        }
+
     </div>
 </div>

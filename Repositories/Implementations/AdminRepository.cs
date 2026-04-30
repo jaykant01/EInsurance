@@ -30,11 +30,25 @@ namespace EInsurance.Repositories.Implementations
         }
 
         // Customers
-        public async Task<List<CustomerListDto>> GetAllCustomersAsync()
-            => await GetCustomerQuery("").ToListAsync();
+        public async Task<PagedResultDto<CustomerListDto>> GetAllCustomersAsync(string search, int page, int pageSize)
+        {
+            var query = GetCustomerQuery(search);
+            var total = await query.CountAsync();
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-        public async Task<List<CustomerListDto>> SearchCustomersAsync(string search)
-            => await GetCustomerQuery(search).ToListAsync();
+            return new PagedResultDto<CustomerListDto>
+            {
+                Items = items,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalCount = total,
+                TotalPages = (int)Math.Ceiling(total / (double)pageSize),
+                Search = search
+            };
+        }
 
         private IQueryable<CustomerListDto> GetCustomerQuery(string search)
         {
@@ -85,11 +99,25 @@ namespace EInsurance.Repositories.Implementations
         }
 
         // Agents
-        public async Task<List<AgentListDto>> GetAllAgentsAsync()
-            => await GetAgentQuery("").ToListAsync();
+        public async Task<PagedResultDto<AgentListDto>> GetAllAgentsAsync(string search, int page, int pageSize)
+        {
+            var query = GetAgentQuery(search);
+            var total = await query.CountAsync();
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-        public async Task<List<AgentListDto>> SearchAgentsAsync(string search)
-            => await GetAgentQuery(search).ToListAsync();
+            return new PagedResultDto<AgentListDto>
+            {
+                Items = items,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalCount = total,
+                TotalPages = (int)Math.Ceiling(total / (double)pageSize),
+                Search = search
+            };
+        }
 
         private IQueryable<AgentListDto> GetAgentQuery(string search)
         {
@@ -138,11 +166,25 @@ namespace EInsurance.Repositories.Implementations
         }
 
         // Employees 
-        public async Task<List<EmployeeListDto>> GetAllEmployeesAsync()
-            => await GetEmployeeQuery("").ToListAsync();
+        public async Task<PagedResultDto<EmployeeListDto>> GetAllEmployeesAsync(string search, int page, int pageSize)
+        {
+            var query = GetEmployeeQuery(search);
+            var total = await query.CountAsync();
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-        public async Task<List<EmployeeListDto>> SearchEmployeesAsync(string search)
-            => await GetEmployeeQuery(search).ToListAsync();
+            return new PagedResultDto<EmployeeListDto>
+            {
+                Items = items,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalCount = total,
+                TotalPages = (int)Math.Ceiling(total / (double)pageSize),
+                Search = search
+            };
+        }
 
         private IQueryable<EmployeeListDto> GetEmployeeQuery(string search)
         {
